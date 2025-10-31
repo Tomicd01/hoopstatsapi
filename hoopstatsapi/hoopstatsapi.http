@@ -1,0 +1,6 @@
+@hoopstatsapi_HostAddress = http://localhost:5261
+
+GET {{hoopstatsapi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
