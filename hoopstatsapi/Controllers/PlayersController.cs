@@ -88,10 +88,26 @@ namespace hoopstatsapi.Controllers
 
             }catch(Exception ex)
             {
+                //logger
                 return StatusCode(500, "An Internal Error occured. Check logs.");
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePlayer([FromRoute] int id)
+        {
+            try
+            {
+                await _playerService.DeletePlayer(id);
+
+                return NoContent();
+
+            }catch(Exception ex)
+            {
+                //logger
+                return StatusCode(500, "An Internal Error occured. Check logs.");
+            }
+        }
 
     }
 }
