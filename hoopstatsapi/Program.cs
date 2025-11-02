@@ -3,6 +3,7 @@ using hoopstatsapi.Application.Services;
 using hoopstatsapi.Infrastructure.Data;
 using hoopstatsapi.Infrastructure.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
+using hoopstatsapi.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(Environment.GetEnvironmentVariable("HoopStatsConnection")));
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddInfrastructureService();
 
 
 var app = builder.Build();
