@@ -14,6 +14,8 @@ namespace hoopstatsapi.Application.Mappings
         public MappingProfile()
         {
             CreateMap<CreatePlayerGameStatsDto, PlayerGameStats>();
+            CreateMap<UpdatePlayerGameStatsDto, PlayerGameStats>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

@@ -13,7 +13,7 @@ namespace hoopstatsapi.Application.Interfaces
     public interface IPlayerGameStatsService
     {
         Task<IEnumerable<PlayerGameStats>> GetAllPlayerStats();
-        Task<PlayerGameStats> GetPlayerGameStatsById(int id);
+        Task<PlayerGameStats> GetPlayerGameStatsByIds(int playerId, int gameId);
         Task CreatePlayerGameStats(CreatePlayerGameStatsDto createPlayerGameStatsDto);
         Task DeletePlayerGameStats(int id);
         Task UpdatePlayerGameStats(int playerId, int gameId, UpdatePlayerGameStatsDto updatePlayerDto);

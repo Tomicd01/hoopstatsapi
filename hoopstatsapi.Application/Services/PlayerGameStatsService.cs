@@ -37,14 +37,35 @@ namespace hoopstatsapi.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<PlayerGameStats> GetPlayerGameStatsById(int id)
+        public async Task<PlayerGameStats> GetPlayerGameStatsByIds(int playerId, int gameId)
         {
-            throw new NotImplementedException();
+            PlayerGameStats stats = (await _statsRepo.GetAsync()).FirstOrDefault(s => s.PlayerId == playerId && s.GameId == gameId);
+            return stats;
         }
 
-        public Task UpdatePlayerGameStats(int playerId, int gameId, UpdatePlayerGameStatsDto updatePlayerDto)
+        public async Task UpdatePlayerGameStats(int playerId, int gameId, UpdatePlayerGameStatsDto updatePlayerGameStatsDto)
         {
-            throw new NotImplementedException();
+            PlayerGameStats statsToUpdate = await GetPlayerGameStatsByIds(playerId, gameId);
+
+            _mapper.Map(updatePlayerGameStatsDto, statsToUpdate);
+
+            /*foreach(var prop in updatePlayerGameStatsDto.GetType().GetProperties())
+            {
+                var propValue = prop.GetValue(updatePlayerGameStatsDto);
+                var propName = prop.Name;
+
+                if(propValue != null)
+                {
+                    var entityProp = typeof(PlayerGameStats).GetProperty(propName);
+                    if(entityProp != null && entityProp.CanWrite)
+                    {
+                        entityProp.SetValue(statsToUpdate, propValue);
+                    }
+                }
+                
+            }*/
+
+            await _statsRepo.UpdateAsync(statsToUpdate);
         }
     }
 }

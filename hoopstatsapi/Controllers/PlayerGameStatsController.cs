@@ -33,5 +33,24 @@ namespace hoopstatsapi.Host.Controllers
                 return StatusCode(500, "An Internal Error occured. Check logs.");
             }
         }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdatePlayerGameStats([FromQuery] int playerId, [FromQuery] int gameId, UpdatePlayerGameStatsDto updatePlayerGameStatsDto)
+        {
+            try
+            {
+                if(playerId == null || gameId == null)
+                {
+                    return BadRequest("Id not found.");
+                }
+
+                await _statsService.UpdatePlayerGameStats(playerId, gameId, updatePlayerGameStatsDto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An Internal Error occured. Check logs.");
+            }
+        }
     }
 }
