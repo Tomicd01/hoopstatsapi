@@ -31,6 +31,15 @@ namespace hoopstatsapi.Infrastructure.Data
                 .HasForeignKey(p => p.TeamId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Game>()
+                .HasOne(g => g.HomeTeam)
+                .WithMany(ht => ht.HomeGames)
+                .HasForeignKey(g => g.HomeTeamId);
+            modelBuilder.Entity<Game>()
+                .HasOne(g => g.AwayTeam)
+                .WithMany(t => t.AwayGames)
+                .HasForeignKey(g => g.AwayTeamId);
+
         }
 
     }

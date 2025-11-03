@@ -1,8 +1,3 @@
-using hoopstatsapi.Application.Interfaces;
-using hoopstatsapi.Application.Services;
-using hoopstatsapi.Infrastructure.Data;
-using hoopstatsapi.Infrastructure.Repositories.Generic;
-using Microsoft.EntityFrameworkCore;
 using hoopstatsapi.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
