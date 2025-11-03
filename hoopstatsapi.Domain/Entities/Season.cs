@@ -1,4 +1,5 @@
-﻿using hoopstatsapi.Domain.Entities.Statistics;
+﻿using hoopstatsapi.Domain.Entities.Games;
+using hoopstatsapi.Domain.Entities.Statistics;
 
 namespace hoopstatsapi.Domain.Entities
 {
@@ -6,6 +7,6 @@ namespace hoopstatsapi.Domain.Entities
     {
         public int Id { get; set; }
         public string SeasonName { get; set; }
-        public ICollection<PlayerStatsSeason> PlayerStatsSeasons { get; set; } = new List<PlayerStatsSeason>();
+        public ICollection<Game> Games { get; set; } = new List<Game>();
     }
 }

@@ -22,6 +22,29 @@ namespace hoopstatsapi.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("hoopstatsapi.Domain.Entities.Coaches.Coach", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CoachFullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId")
+                        .IsUnique();
+
+                    b.ToTable("Coaches");
+                });
+
             modelBuilder.Entity("hoopstatsapi.Domain.Entities.Games.Game", b =>
                 {
                     b.Property<int>("Id")
@@ -38,6 +61,10 @@ namespace hoopstatsapi.Infrastructure.Migrations
 
                     b.Property<int>("HomeTeamId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("SeasonId")
                         .HasColumnType("integer");
@@ -119,8 +146,8 @@ namespace hoopstatsapi.Infrastructure.Migrations
                     b.Property<int>("DRB")
                         .HasColumnType("integer");
 
-                    b.Property<float>("Eff")
-                        .HasColumnType("real");
+                    b.Property<int>("Eff")
+                        .HasColumnType("integer");
 
                     b.Property<int>("FGA")
                         .HasColumnType("integer");
@@ -137,8 +164,8 @@ namespace hoopstatsapi.Infrastructure.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Minutes")
-                        .HasColumnType("integer");
+                    b.Property<TimeSpan>("Minutes")
+                        .HasColumnType("interval");
 
                     b.Property<int>("ORB")
                         .HasColumnType("integer");
@@ -182,83 +209,6 @@ namespace hoopstatsapi.Infrastructure.Migrations
                     b.ToTable("PlayerGameStats");
                 });
 
-            modelBuilder.Entity("hoopstatsapi.Domain.Entities.Statistics.PlayerStatsSeason", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AST")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("BLK")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DRB")
-                        .HasColumnType("integer");
-
-                    b.Property<float>("Eff")
-                        .HasColumnType("real");
-
-                    b.Property<int>("FGA")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FGM")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FTA")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FTM")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Minutes")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ORB")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PFD")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PTS")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("STL")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SeasonId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TO")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("_2PA")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("_2PM")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("_3PA")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("_3PM")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.HasIndex("SeasonId");
-
-                    b.ToTable("PlayerStatsSeason");
-                });
-
             modelBuilder.Entity("hoopstatsapi.Domain.Entities.Teams.Team", b =>
                 {
                     b.Property<int>("Id")
@@ -291,6 +241,17 @@ namespace hoopstatsapi.Infrastructure.Migrations
                     b.ToTable("Teams");
                 });
 
+            modelBuilder.Entity("hoopstatsapi.Domain.Entities.Coaches.Coach", b =>
+                {
+                    b.HasOne("hoopstatsapi.Domain.Entities.Teams.Team", "Team")
+                        .WithOne("Coach")
+                        .HasForeignKey("hoopstatsapi.Domain.Entities.Coaches.Coach", "TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("hoopstatsapi.Domain.Entities.Games.Game", b =>
                 {
                     b.HasOne("hoopstatsapi.Domain.Entities.Teams.Team", "AwayTeam")
@@ -306,7 +267,7 @@ namespace hoopstatsapi.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("hoopstatsapi.Domain.Entities.Season", "Season")
-                        .WithMany()
+                        .WithMany("Games")
                         .HasForeignKey("SeasonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -348,25 +309,6 @@ namespace hoopstatsapi.Infrastructure.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("hoopstatsapi.Domain.Entities.Statistics.PlayerStatsSeason", b =>
-                {
-                    b.HasOne("hoopstatsapi.Domain.Entities.Players.Player", "Player")
-                        .WithMany("PlayerStatsSeasons")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("hoopstatsapi.Domain.Entities.Season", "Season")
-                        .WithMany("PlayerStatsSeasons")
-                        .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Player");
-
-                    b.Navigation("Season");
-                });
-
             modelBuilder.Entity("hoopstatsapi.Domain.Entities.Games.Game", b =>
                 {
                     b.Navigation("PlayerStats");
@@ -375,18 +317,19 @@ namespace hoopstatsapi.Infrastructure.Migrations
             modelBuilder.Entity("hoopstatsapi.Domain.Entities.Players.Player", b =>
                 {
                     b.Navigation("GameStats");
-
-                    b.Navigation("PlayerStatsSeasons");
                 });
 
             modelBuilder.Entity("hoopstatsapi.Domain.Entities.Season", b =>
                 {
-                    b.Navigation("PlayerStatsSeasons");
+                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("hoopstatsapi.Domain.Entities.Teams.Team", b =>
                 {
                     b.Navigation("AwayGames");
+
+                    b.Navigation("Coach")
+                        .IsRequired();
 
                     b.Navigation("HomeGames");
 

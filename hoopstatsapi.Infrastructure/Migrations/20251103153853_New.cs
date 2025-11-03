@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace hoopstatsapi.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class seasonplayerstatsseason : Migration
+    public partial class New : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,11 +31,36 @@ namespace hoopstatsapi.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TeamName = table.Column<string>(type: "text", nullable: false)
+                    TeamName = table.Column<string>(type: "text", nullable: false),
+                    Points = table.Column<int>(type: "integer", nullable: false),
+                    Wins = table.Column<int>(type: "integer", nullable: false),
+                    Losses = table.Column<int>(type: "integer", nullable: false),
+                    PointsScored = table.Column<int>(type: "integer", nullable: false),
+                    PointsConceded = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Teams", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Coaches",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CoachFullName = table.Column<string>(type: "text", nullable: false),
+                    TeamId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Coaches", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Coaches_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,6 +72,7 @@ namespace hoopstatsapi.Infrastructure.Migrations
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     HomeTeamId = table.Column<int>(type: "integer", nullable: false),
                     AwayTeamId = table.Column<int>(type: "integer", nullable: false),
+                    Location = table.Column<string>(type: "text", nullable: false),
                     SeasonId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -103,8 +129,8 @@ namespace hoopstatsapi.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     GameId = table.Column<int>(type: "integer", nullable: false),
                     PlayerId = table.Column<int>(type: "integer", nullable: false),
-                    Minutes = table.Column<int>(type: "integer", nullable: false),
-                    Eff = table.Column<float>(type: "real", nullable: false),
+                    Minutes = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    Eff = table.Column<int>(type: "integer", nullable: false),
                     FGA = table.Column<int>(type: "integer", nullable: false),
                     FGM = table.Column<int>(type: "integer", nullable: false),
                     _2PA = table.Column<int>(type: "integer", nullable: false),
@@ -140,49 +166,11 @@ namespace hoopstatsapi.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "PlayerStatsSeason",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SeasonId = table.Column<int>(type: "integer", nullable: false),
-                    Minutes = table.Column<int>(type: "integer", nullable: false),
-                    Eff = table.Column<float>(type: "real", nullable: false),
-                    FGA = table.Column<int>(type: "integer", nullable: false),
-                    FGM = table.Column<int>(type: "integer", nullable: false),
-                    _2PA = table.Column<int>(type: "integer", nullable: false),
-                    _2PM = table.Column<int>(type: "integer", nullable: false),
-                    _3PA = table.Column<int>(type: "integer", nullable: false),
-                    _3PM = table.Column<int>(type: "integer", nullable: false),
-                    FTA = table.Column<int>(type: "integer", nullable: false),
-                    FTM = table.Column<int>(type: "integer", nullable: false),
-                    ORB = table.Column<int>(type: "integer", nullable: false),
-                    DRB = table.Column<int>(type: "integer", nullable: false),
-                    AST = table.Column<int>(type: "integer", nullable: false),
-                    TO = table.Column<int>(type: "integer", nullable: false),
-                    STL = table.Column<int>(type: "integer", nullable: false),
-                    BLK = table.Column<int>(type: "integer", nullable: false),
-                    PFD = table.Column<int>(type: "integer", nullable: false),
-                    PTS = table.Column<int>(type: "integer", nullable: false),
-                    PlayerId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayerStatsSeason", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PlayerStatsSeason_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerStatsSeason_Seasons_SeasonId",
-                        column: x => x.SeasonId,
-                        principalTable: "Seasons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Coaches_TeamId",
+                table: "Coaches",
+                column: "TeamId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_AwayTeamId",
@@ -213,26 +201,16 @@ namespace hoopstatsapi.Infrastructure.Migrations
                 name: "IX_Players_TeamId",
                 table: "Players",
                 column: "TeamId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerStatsSeason_PlayerId",
-                table: "PlayerStatsSeason",
-                column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlayerStatsSeason_SeasonId",
-                table: "PlayerStatsSeason",
-                column: "SeasonId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PlayerGameStats");
+                name: "Coaches");
 
             migrationBuilder.DropTable(
-                name: "PlayerStatsSeason");
+                name: "PlayerGameStats");
 
             migrationBuilder.DropTable(
                 name: "Games");

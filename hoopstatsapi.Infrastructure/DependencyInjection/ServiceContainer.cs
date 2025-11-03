@@ -1,4 +1,5 @@
 ﻿using hoopstatsapi.Application.Interfaces;
+using hoopstatsapi.Application.Mappings;
 using hoopstatsapi.Application.Services;
 using hoopstatsapi.Infrastructure.Data;
 using hoopstatsapi.Infrastructure.Repositories.Generic;
@@ -26,6 +27,8 @@ namespace hoopstatsapi.Infrastructure.DependencyInjection
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IPlayerService, PlayerService>();
+            services.AddScoped<IPlayerGameStatsService, PlayerGameStatsService>();
+            services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
 
             return services;
         }

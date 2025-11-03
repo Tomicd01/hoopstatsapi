@@ -1,4 +1,5 @@
 ﻿using hoopstatsapi.Domain.Entities;
+using hoopstatsapi.Domain.Entities.Coaches;
 using hoopstatsapi.Domain.Entities.Games;
 using hoopstatsapi.Domain.Entities.Players;
 using hoopstatsapi.Domain.Entities.Statistics;
@@ -14,11 +15,11 @@ namespace hoopstatsapi.Infrastructure.Data
         }
 
         public DbSet<Player> Players { get; set; }
-        public DbSet<PlayerStatsSeason> PlayerStatsSeason { get; set; }
         public DbSet<PlayerGameStats> PlayerGameStats { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Team> Teams { get; set; }
+        public DbSet<Coach> Coaches { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +40,11 @@ namespace hoopstatsapi.Infrastructure.Data
                 .HasOne(g => g.AwayTeam)
                 .WithMany(t => t.AwayGames)
                 .HasForeignKey(g => g.AwayTeamId);
+
+            modelBuilder.Entity<Team>()
+                .HasOne(t => t.Coach)
+                .WithOne(c => c.Team)
+                .HasForeignKey<Coach>(c => c.TeamId);
 
         }
 

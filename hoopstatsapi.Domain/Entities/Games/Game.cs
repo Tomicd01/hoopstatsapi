@@ -12,6 +12,8 @@ namespace hoopstatsapi.Domain.Entities.Games
         public int AwayTeamId { get; set; }
         public Team AwayTeam { get; set; }
 
+        public string Location { get; set; }
+
         public int SeasonId { get; set; }
         public Season Season { get; set; }
 

@@ -15,8 +15,6 @@ namespace hoopstatsapi.Domain.Entities.Players
         public int TeamId { get; set; }
         public Team Team { get; set; }
 
-        public ICollection<PlayerStatsSeason> PlayerStatsSeasons { get; set; } = new List<PlayerStatsSeason>();
-
         public ICollection<PlayerGameStats> GameStats { get; set; } = new List<PlayerGameStats>();
 
     }

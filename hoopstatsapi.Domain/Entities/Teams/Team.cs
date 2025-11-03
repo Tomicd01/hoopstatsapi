@@ -1,4 +1,5 @@
-﻿using hoopstatsapi.Domain.Entities.Games;
+﻿using hoopstatsapi.Domain.Entities.Coaches;
+using hoopstatsapi.Domain.Entities.Games;
 using hoopstatsapi.Domain.Entities.Players;
 
 namespace hoopstatsapi.Domain.Entities.Teams
@@ -15,5 +16,6 @@ namespace hoopstatsapi.Domain.Entities.Teams
         public ICollection<Game> HomeGames { get; set; } = new List<Game>();
         public ICollection<Game> AwayGames { get; set; } = new List<Game>();
         public ICollection<Player> Players { get; set; } = new List<Player>();
+        public Coach Coach { get; set; }
     }
 }
