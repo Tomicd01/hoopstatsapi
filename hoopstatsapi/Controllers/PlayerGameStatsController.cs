@@ -2,6 +2,7 @@
 using hoopstatsapi.Application.DTO.Players;
 using hoopstatsapi.Application.Interfaces;
 using hoopstatsapi.Application.Services;
+using hoopstatsapi.Domain.Entities.Games;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,69 @@ namespace hoopstatsapi.Host.Controllers
             _statsService = statsService;
         }
 
-        [HttpPost("create")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllPlayersGameStats()
+        {
+            try
+            {
+                var stats = await _statsService.GetAllPlayerStats();
+
+                if (stats == null)
+                {
+                    return Ok("No records found");
+                }
+
+                return Ok(stats);
+
+            }catch(Exception ex)
+            {
+                return StatusCode(500, "An Internal Error occured. Check logs.");
+            }
+        }
+
+        [HttpGet("singlestat")]
+        public async Task<IActionResult> GetPlayerGameStatsByIds([FromQuery] int playerId, [FromQuery] int gameId)
+        {
+            try
+            {
+                var stats = await _statsService.GetPlayerGameStatsByIds(playerId, gameId);
+
+                if (stats == null)
+                {
+                    return Ok("No records for specified player and game were found");
+                }
+
+                return Ok(stats);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An Internal Error occured. Check logs.");
+            }
+        }
+
+        [HttpGet("singleplayerstats/{playerId}")]
+        public async Task<IActionResult> GetPlayersAllGamesStats([FromRoute] int playerId)
+        {
+            try
+            {
+                var stats = await _statsService.GetPlayersAllGamesStats(playerId);
+
+                if (stats == null)
+                {
+                    return Ok("No records for specified player were found");
+                }
+
+                return Ok(stats);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An Internal Error occured. Check logs.");
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> CreatePlayerGameStats([FromBody] CreatePlayerGameStatsDto createPlayerGameStats)
         {
             try
@@ -34,16 +97,11 @@ namespace hoopstatsapi.Host.Controllers
             }
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdatePlayerGameStats([FromQuery] int playerId, [FromQuery] int gameId, UpdatePlayerGameStatsDto updatePlayerGameStatsDto)
+        [HttpPut("{playerId}/{gameId}")]
+        public async Task<IActionResult> UpdatePlayerGameStats([FromRoute] int playerId, [FromRoute] int gameId, UpdatePlayerGameStatsDto updatePlayerGameStatsDto)
         {
             try
             {
-                if(playerId == null || gameId == null)
-                {
-                    return BadRequest("Id not found.");
-                }
-
                 await _statsService.UpdatePlayerGameStats(playerId, gameId, updatePlayerGameStatsDto);
                 return NoContent();
             }

@@ -12,10 +12,10 @@ namespace hoopstatsapi.Application.Services
 {
     public class PlayerGameStatsService : IPlayerGameStatsService
     {
-        private readonly IRepository<PlayerGameStats> _statsRepo;
+        private readonly IPlayerGameStatsRepository _statsRepo;
         private readonly IMapper _mapper;
 
-        public PlayerGameStatsService(IRepository<PlayerGameStats> statsRepo, IMapper mapper)
+        public PlayerGameStatsService(IPlayerGameStatsRepository statsRepo, IMapper mapper)
         {
             _statsRepo = statsRepo;
             _mapper = mapper;
@@ -27,20 +27,27 @@ namespace hoopstatsapi.Application.Services
             await _statsRepo.AddAsync(playerStats);
         }
 
-        public Task DeletePlayerGameStats(int id)
+        public async Task DeletePlayerGameStats(int playerId, int gameId)
         {
-            throw new NotImplementedException();
+            PlayerGameStats stats = await GetPlayerGameStatsByIds(playerId, gameId);
+            await _statsRepo.DeleteAsync(stats.Id);
         }
 
-        public Task<IEnumerable<PlayerGameStats>> GetAllPlayerStats()
+        public async Task<IEnumerable<PlayerGameStats>> GetAllPlayerStats()
         {
-            throw new NotImplementedException();
+            return await _statsRepo.GetAsync();
         }
 
         public async Task<PlayerGameStats> GetPlayerGameStatsByIds(int playerId, int gameId)
         {
-            PlayerGameStats stats = (await _statsRepo.GetAsync()).FirstOrDefault(s => s.PlayerId == playerId && s.GameId == gameId);
+            PlayerGameStats stats = await _statsRepo.GetPlayerGameStatsByIds(playerId, gameId);
             return stats;
+        }
+
+        public async Task<IEnumerable<PlayerGameStats>> GetPlayersAllGamesStats(int playerId)
+        {
+            var allStats = await _statsRepo.GetPlayersAllGamesStats(playerId);
+            return allStats;
         }
 
         public async Task UpdatePlayerGameStats(int playerId, int gameId, UpdatePlayerGameStatsDto updatePlayerGameStatsDto)
@@ -48,22 +55,6 @@ namespace hoopstatsapi.Application.Services
             PlayerGameStats statsToUpdate = await GetPlayerGameStatsByIds(playerId, gameId);
 
             _mapper.Map(updatePlayerGameStatsDto, statsToUpdate);
-
-            /*foreach(var prop in updatePlayerGameStatsDto.GetType().GetProperties())
-            {
-                var propValue = prop.GetValue(updatePlayerGameStatsDto);
-                var propName = prop.Name;
-
-                if(propValue != null)
-                {
-                    var entityProp = typeof(PlayerGameStats).GetProperty(propName);
-                    if(entityProp != null && entityProp.CanWrite)
-                    {
-                        entityProp.SetValue(statsToUpdate, propValue);
-                    }
-                }
-                
-            }*/
 
             await _statsRepo.UpdateAsync(statsToUpdate);
         }

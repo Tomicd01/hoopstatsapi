@@ -3,6 +3,7 @@ using hoopstatsapi.Application.Mappings;
 using hoopstatsapi.Application.Services;
 using hoopstatsapi.Infrastructure.Data;
 using hoopstatsapi.Infrastructure.Repositories.Generic;
+using hoopstatsapi.Infrastructure.Repositories.PlayerGameStats;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,6 +29,7 @@ namespace hoopstatsapi.Infrastructure.DependencyInjection
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IPlayerService, PlayerService>();
             services.AddScoped<IPlayerGameStatsService, PlayerGameStatsService>();
+            services.AddScoped<IPlayerGameStatsRepository, PlayerGameStatsRepository>();
             services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
 
             return services;
