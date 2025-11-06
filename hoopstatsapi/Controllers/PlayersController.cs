@@ -21,92 +21,43 @@ namespace hoopstatsapi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPlayers()
         {
-            try
+            var players = await _playerService.GetPlayers();
+            if(players == null)
             {
-                var players = await _playerService.GetPlayers();
-                if(players == null)
-                {
-                    return NoContent();
-                }
-
-                return Ok(players);
-
-            }catch(Exception ex)
-            {
-                return StatusCode(500, "An Internal Error occured. Check logs.");
+                return NoContent();
             }
+
+            return Ok(players);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSinglePlayer([FromRoute] int id)
-        {
-            try
-            {
-                if (id == null)
-                {
-                    return BadRequest("Id not found");
-                }
-
-                var player =  await _playerService.GetPlayerById(id);
-                return Ok(player);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, "An Internal Error occured. Check logs.");
-            }
+        { 
+            var player =  await _playerService.GetPlayerById(id);
+            return Ok(player);
         }
 
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreatePlayer([FromBody] CreatePlayerDto createPlayer)
         {
-            try
-            {
-                await _playerService.CreatePlayer(createPlayer);
-
-                return Created(nameof(GetSinglePlayer), createPlayer);
-
-            }catch(Exception ex)
-            {
-                return StatusCode(500, "An Internal Error occured. Check logs.");
-            }
+            await _playerService.CreatePlayer(createPlayer);
+            return Created(nameof(GetSinglePlayer), createPlayer);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdatePlayer(int id, [FromBody] UpdatePlayerDto updatePlayerDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePlayer([FromRoute] int id, [FromBody] UpdatePlayerDto updatePlayerDto)
         {
-            try
-            {
-                if(id == null)
-                {
-                    return BadRequest("Id not found");
-                }
 
-                await _playerService.UpdatePlayer(id, updatePlayerDto);
-
-                return NoContent();
-
-            }catch(Exception ex)
-            {
-                //logger
-                return StatusCode(500, "An Internal Error occured. Check logs.");
-            }
+            await _playerService.UpdatePlayer(id, updatePlayerDto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlayer([FromRoute] int id)
         {
-            try
-            {
-                await _playerService.DeletePlayer(id);
-
-                return NoContent();
-
-            }catch(Exception ex)
-            {
-                //logger
-                return StatusCode(500, "An Internal Error occured. Check logs.");
-            }
+            await _playerService.DeletePlayer(id);
+            return NoContent();
         }
 
     }

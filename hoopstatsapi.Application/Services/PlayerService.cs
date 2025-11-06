@@ -1,6 +1,7 @@
 ﻿using hoopstatsapi.Application.DTO.Players;
 using hoopstatsapi.Application.Interfaces;
 using hoopstatsapi.Domain.Entities.Players;
+using hoopstatsapi.Domain.Entities.Teams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,11 @@ namespace hoopstatsapi.Application.Services
     public class PlayerService : IPlayerService
     {
         private readonly IRepository<Player> _playerRepo;
-        public PlayerService(IRepository<Player> playerRepo)
+        private readonly IRepository<Team> _teamRepo;
+        public PlayerService(IRepository<Player> playerRepo, IRepository<Team> teamRepo)
         {
             _playerRepo = playerRepo;
+            _teamRepo = teamRepo;
         }
 
         public async Task DeletePlayer(int id)
@@ -35,6 +38,8 @@ namespace hoopstatsapi.Application.Services
 
         public async Task CreatePlayer(CreatePlayerDto createPlayerDto)
         {
+            var team = await _teamRepo.GetByIdAsync(createPlayerDto.TeamId);
+
             Player player = new Player()
             {
                 Name = createPlayerDto.Name,
@@ -50,6 +55,7 @@ namespace hoopstatsapi.Application.Services
         public async Task UpdatePlayer(int playerId, UpdatePlayerDto updatePlayerDto)
         {
             Player player = await _playerRepo.GetByIdAsync(playerId);
+            Team team = await _teamRepo.GetByIdAsync((int)updatePlayerDto.TeamId);
 
             player.Name = updatePlayerDto.Name;
             player.LastName = updatePlayerDto.LastName;

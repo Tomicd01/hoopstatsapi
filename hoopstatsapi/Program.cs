@@ -1,3 +1,4 @@
+using hoopstatsapi.Host.Middleware;
 using hoopstatsapi.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseAuthorization();
 

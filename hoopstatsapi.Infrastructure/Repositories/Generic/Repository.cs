@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using hoopstatsapi.Application.Exceptions;
 using hoopstatsapi.Application.Interfaces;
 using hoopstatsapi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,10 @@ namespace hoopstatsapi.Infrastructure.Repositories.Generic
         public async Task DeleteAsync(int id)
         {
             var obj = await _context.Set<T>().FindAsync(id);
-            if (obj == null) return;
+            if (obj == null)
+            {
+                throw new NotFoundException($"Resource with id {id} not found.");
+            };
             _context.Set<T>().Remove(obj);
             await _context.SaveChangesAsync();
         }
@@ -40,6 +44,10 @@ namespace hoopstatsapi.Infrastructure.Repositories.Generic
         public async Task<T> GetByIdAsync(int id)
         {
             var obj = await _context.Set<T>().FindAsync(id);
+            if (obj == null)
+            {
+                throw new NotFoundException($"Resource with id {id} not found.");
+            };
             return obj;
         }
 
