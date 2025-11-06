@@ -1,4 +1,5 @@
-﻿using hoopstatsapi.Application.DTO.Players;
+﻿using hoopstatsapi.Application.DTO.Game;
+using hoopstatsapi.Application.DTO.Players;
 using hoopstatsapi.Domain.Entities.Games;
 using hoopstatsapi.Domain.Entities.Players;
 using System;

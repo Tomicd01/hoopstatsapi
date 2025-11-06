@@ -28,7 +28,7 @@ namespace hoopstatsapi.Host.Controllers
 
                 if (stats == null)
                 {
-                    return Ok("No records found");
+                    return NoContent();
                 }
 
                 return Ok(stats);
