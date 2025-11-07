@@ -46,8 +46,8 @@ namespace hoopstatsapi.Application.Services
         public async Task UpdateGame(int id, UpdateGameDto updateGameDto)
         {
             Game game = await _gameRepo.GetByIdAsync(id);
-            Game updatedGame = _mapper.Map<Game>(updateGameDto);
-            await _gameRepo.UpdateAsync(updatedGame);
+            _mapper.Map(updateGameDto, game);
+            await _gameRepo.UpdateAsync(game);
         }
     }
 }

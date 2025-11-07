@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hoopstatsapi.Host.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/games")]
     [ApiController]
     public class GameController : ControllerBase
     {
@@ -37,6 +37,13 @@ namespace hoopstatsapi.Host.Controllers
         {
             await _gameService.CreateGame(createGameDto);
             return Created(Request.Path.Value, createGameDto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateGame([FromRoute] int id,[FromBody] UpdateGameDto updateGameDto)
+        {
+            await _gameService.UpdateGame(id, updateGameDto);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
