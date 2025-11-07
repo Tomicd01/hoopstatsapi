@@ -21,6 +21,9 @@ namespace hoopstatsapi.Application.Mappings
             CreateMap<CreateGameDto, Game>();
             CreateMap<UpdateGameDto, Game>()
                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<PlayerGameStats, ReturnPlayerGameStatsDto>()
+                .ForMember(dest => dest.PlayerName,
+                           opt => opt.MapFrom(src => src.Player.Name + " " + src.Player.LastName));
         }
     }
 }

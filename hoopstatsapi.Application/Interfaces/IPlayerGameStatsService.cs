@@ -16,7 +16,7 @@ namespace hoopstatsapi.Application.Interfaces
         Task<PlayerGameStats> GetPlayerGameStatsByIds(int playerId, int gameId);
         Task CreatePlayerGameStats(CreatePlayerGameStatsDto createPlayerGameStatsDto);
         Task DeletePlayerGameStats(int playerId, int gameId);
-        Task<IEnumerable<PlayerGameStats>> GetPlayersAllGamesStats(int playerId);
+        Task<IEnumerable<ReturnPlayerGameStatsDto>> GetPlayersAllGamesStats(int playerId);
         Task UpdatePlayerGameStats(int playerId, int gameId, UpdatePlayerGameStatsDto updatePlayerDto);
     }
 }

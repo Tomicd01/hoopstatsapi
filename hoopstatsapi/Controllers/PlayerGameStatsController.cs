@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hoopstatsapi.Host.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/stats")]
     [ApiController]
     public class PlayerGameStatsController : ControllerBase
     {
@@ -23,12 +23,6 @@ namespace hoopstatsapi.Host.Controllers
         public async Task<IActionResult> GetAllPlayersGameStats()
         {
             var stats = await _statsService.GetAllPlayerStats();
-
-            if (stats == null)
-            {
-                return NoContent();
-            }
-
             return Ok(stats);
         }
 
@@ -36,12 +30,6 @@ namespace hoopstatsapi.Host.Controllers
         public async Task<IActionResult> GetPlayerGameStatsByIds([FromRoute] int playerId, [FromRoute] int gameId)
         {
             var stats = await _statsService.GetPlayerGameStatsByIds(playerId, gameId);
-
-            if (stats == null)
-            {
-                return NoContent();
-            }
-
             return Ok(stats);
         }
 
@@ -49,21 +37,13 @@ namespace hoopstatsapi.Host.Controllers
         public async Task<IActionResult> GetPlayersAllGamesStats([FromRoute] int playerId)
         {
             var stats = await _statsService.GetPlayersAllGamesStats(playerId);
-
-            if (stats == null)
-            {
-                return NoContent();
-            }
-
             return Ok(stats);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreatePlayerGameStats([FromBody] CreatePlayerGameStatsDto createPlayerGameStats)
         {
-
              await _statsService.CreatePlayerGameStats(createPlayerGameStats);
-
              return Created(nameof(PlayerGameStatsService), createPlayerGameStats);
         }
 

@@ -1,6 +1,8 @@
-﻿using hoopstatsapi.Application.Exceptions;
+﻿using hoopstatsapi.Application.DTO.PlayerGameStats;
+using hoopstatsapi.Application.Exceptions;
 using hoopstatsapi.Application.Interfaces;
 using hoopstatsapi.Domain.Entities.Games;
+using hoopstatsapi.Domain.Entities.Players;
 using hoopstatsapi.Domain.Entities.Statistics;
 using hoopstatsapi.Infrastructure.Data;
 using hoopstatsapi.Infrastructure.Repositories.Generic;
@@ -15,9 +17,10 @@ namespace hoopstatsapi.Infrastructure.Repositories.PlayerGameStats
 {
     public class PlayerGameStatsRepository : Repository<hoopstatsapi.Domain.Entities.Statistics.PlayerGameStats>, IPlayerGameStatsRepository
     {
-
-        public PlayerGameStatsRepository(ApplicationDbContext context) : base(context)
+        private readonly IRepository<Player> _playerRepo;
+        public PlayerGameStatsRepository(ApplicationDbContext context, IRepository<Player> playerRepo) : base(context)
         {
+            _playerRepo = playerRepo;
         }
 
         public async Task<hoopstatsapi.Domain.Entities.Statistics.PlayerGameStats> GetPlayerGameStatsByIds(int playerId, int gameId)
@@ -32,11 +35,9 @@ namespace hoopstatsapi.Infrastructure.Repositories.PlayerGameStats
 
         public async Task<IEnumerable<hoopstatsapi.Domain.Entities.Statistics.PlayerGameStats>> GetPlayersAllGamesStats(int playerId)
         {
+            await _playerRepo.GetByIdAsync(playerId);
             var stats = await _context.PlayerGameStats.Where(s => s.PlayerId == playerId).ToListAsync();
-            if (stats == null)
-            {
-                throw new NotFoundException($"Resource with playerid {playerId} not found.");
-            }
+
             return stats;
         }
 
