@@ -31,6 +31,7 @@ namespace hoopstatsapi.Infrastructure.DependencyInjection
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IPlayerGameStatsService, PlayerGameStatsService>();
             services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<ISeasonService, SeasonService>();
             services.AddScoped<IPlayerGameStatsRepository, PlayerGameStatsRepository>();
             services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
 

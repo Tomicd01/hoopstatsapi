@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using hoopstatsapi.Application.DTO.Game;
 using hoopstatsapi.Application.DTO.PlayerGameStats;
+using hoopstatsapi.Application.DTO.Seasons;
 using hoopstatsapi.Application.DTO.Teams;
+using hoopstatsapi.Domain.Entities;
 using hoopstatsapi.Domain.Entities.Games;
 using hoopstatsapi.Domain.Entities.Statistics;
 using hoopstatsapi.Domain.Entities.Teams;
@@ -31,6 +33,8 @@ namespace hoopstatsapi.Application.Mappings
             CreateMap<Team, ReturnTeamDto>()
                 .ForMember(dest => dest.CoachName,
                            opt => opt.MapFrom(src => src.Coach.CoachFullName));
+            CreateMap<CreateSeasonDto, Season>();
+            CreateMap<UpdateSeasonDto, Season>();
         }
     }
 }
