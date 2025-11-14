@@ -22,8 +22,13 @@ namespace hoopstatsapi.Application.Mappings
             CreateMap<CreatePlayerGameStatsDto, PlayerGameStats>();
             CreateMap<UpdatePlayerGameStatsDto, PlayerGameStats>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-            CreateMap<CreateGameDto, Game>();
+            CreateMap<CreateGameDto, Game>()
+                .ForMember(dest => dest.Date, opt =>
+                            opt.MapFrom(src => src.Date.ToUniversalTime())); 
             CreateMap<UpdateGameDto, Game>()
+               .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.HasValue 
+               ? DateTime.SpecifyKind(src.Date.Value, DateTimeKind.Local).ToUniversalTime()
+               : (DateTime?)null))
                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<PlayerGameStats, ReturnPlayerGameStatsDto>()
                 .ForMember(dest => dest.PlayerName,

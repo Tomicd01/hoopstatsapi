@@ -1,6 +1,7 @@
 ﻿using hoopstatsapi.Application.DTO.Game;
 using hoopstatsapi.Application.Interfaces;
 using hoopstatsapi.Domain.Entities.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,7 @@ namespace hoopstatsapi.Host.Controllers
             return Ok(game);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateGame([FromBody] CreateGameDto createGameDto)
         {
@@ -39,6 +41,7 @@ namespace hoopstatsapi.Host.Controllers
             return Created(Request.Path.Value, createGameDto);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateGame([FromRoute] int id,[FromBody] UpdateGameDto updateGameDto)
         {
@@ -46,6 +49,7 @@ namespace hoopstatsapi.Host.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame([FromRoute] int id)
         {
